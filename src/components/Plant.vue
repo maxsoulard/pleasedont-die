@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import config from '../config.js';
+
 export default {
         name: 'plant-component',
         data: function(){
@@ -29,7 +31,7 @@ export default {
         },
         methods: {
             getValue: function() {
-                this.$http.get('http://192.168.0.18:5000/plant').then((response) => {
+                this.$http.get(config.url+'/plant').then((response) => {
                     this.plantNode = JSON.parse(response.body);
                 }, (response) => {
                     // error callback
