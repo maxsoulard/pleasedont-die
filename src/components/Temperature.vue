@@ -33,7 +33,7 @@ export default {
         methods: {
             getValue: function() {
                 this.$http.get(config.url+'/temperature').then((response) => {
-                    this.temperatureNode = JSON.parse(response.body);
+                    this.temperatureNode = response.body;
                 }, (response) => {
                     // error callback
                 });
