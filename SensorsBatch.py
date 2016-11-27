@@ -1,25 +1,28 @@
-from BTSensor import *
+from Sensor import *
 import threading
 import json
 import time
 
 
-if __name__ == '__main__':
-    lock = threading.Lock()
-    temp_sensor_thread = BTSensor(lock, "98:D3:31:70:68:51")
-    temp_sensor_thread.start()
-    temp_sensor_thread.join()
-    current_date = time.strftime("%D-%H:%M:%S")
-    data = json.loads(temp_sensor_thread.value)
-    data['date'] = current_date
-    with open('temperature.json', 'w') as f:
-        json.dump(data, f)
+class SensorTask(Sensor):
+    def __init__(self, lock, bd_addr, file_name):
+        self.file_name = file_name
+        Sensor.__init__(self, lock, bd_addr)
 
-    temp_sensor_thread = BTSensor(lock, "00:14:03:05:8F:21")
-    temp_sensor_thread.start()
-    temp_sensor_thread.join()
-    current_date = time.strftime("%D-%H:%M:%S")
-    data = json.loads(temp_sensor_thread.value)
-    data['date'] = current_date
-    with open('plant.json', 'w') as f:
-        json.dump(data, f)
+    def write(self):
+        data = json.loads(self.value)
+        data['date'] = time.strftime("%D-%H:%M:%S")
+        with open(self.file_name, 'w') as f:
+            json.dump(data, f)
+
+
+if __name__ == '__main__':
+    LOCK = threading.Lock()
+    BT_TASKS = []
+    BT_TASKS.append(SensorTask(LOCK, "98:D3:31:70:68:51", 'temperature.json'))
+    BT_TASKS.append(SensorTask(LOCK, "00:14:03:05:8F:21", 'plant.json'))
+
+    for task in BT_TASKS:
+        task.start()
+        task.join()
+        task.write()
