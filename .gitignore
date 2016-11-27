@@ -4,6 +4,6 @@ dist/
 npm-debug.log
 node_modules/
 dist/
-arduino_temperature_node/libraries
+arduino/*/libraries
 .idea
 *.log*

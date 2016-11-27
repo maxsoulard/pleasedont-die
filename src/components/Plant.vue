@@ -5,11 +5,15 @@
                 <h2 class="mdl-card__title-text">Plante</h2>
             </div>
             <div class="mdl-card__supporting-text">
-                <span v-if="plantNode.soil">Terre : TODO (raw)</span><br>
+                <span v-if="plantNode.moisture">Terre : {{ plantNode.moisture }}</span><br><br>
+                <span class="lastupdate">Dernière mise à jour des données : {{ plantNode.date }} %</span>
             </div>
             <div class="mdl-card__actions mdl-card--border">
                 <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" v-on:click="getValue">
                     Rafraîchir les données
+                </a>
+                <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" v-on:click="subscribeToNotifications">
+                    S'abonner aux notifications
                 </a>
             </div>
         </div>
@@ -32,10 +36,13 @@ export default {
         methods: {
             getValue: function() {
                 this.$http.get(config.url+'/plant').then((response) => {
-                    this.plantNode = JSON.parse(response.body);
+                    this.plantNode = response.body;
                 }, (response) => {
                     // error callback
                 });
+            },
+            subscribeToNotifications: function() {
+                // TODO
             }
         }
 }

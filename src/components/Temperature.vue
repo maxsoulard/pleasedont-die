@@ -6,11 +6,15 @@
             </div>
             <div class="mdl-card__supporting-text">
                 <span v-if="temperatureNode.temp">Température : {{ temperatureNode.temp }} °C</span><br>
-                <span v-if="temperatureNode.hum">Humidité : {{ temperatureNode.hum }} %</span>
+                <span v-if="temperatureNode.hum">Humidité : {{ temperatureNode.hum }} %</span><br><br>
+                <span class="lastupdate">Dernière mise à jour des données : {{ temperatureNode.date }} %</span>
             </div>
             <div class="mdl-card__actions mdl-card--border">
                 <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" v-on:click="getValue">
                     Rafraîchir les données
+                </a>
+                <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" v-on:click="subscribeToNotifications">
+                    S'abonner aux notifications
                 </a>
             </div>
         </div>
@@ -37,6 +41,9 @@ export default {
                 }, (response) => {
                     // error callback
                 });
+            },
+            subscribeToNotifications: function() {
+                // TODO
             }
         }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div class="mdl-grid center-items" id="app">
     <temperature-component></temperature-component>
     <plant-component></plant-component>
   </div>

@@ -54,8 +54,8 @@ void loop()
     // HELP
     if (input == '?')
     {
-      BT.println("Plantsavior BTNode help");
-      BT.println("Send '1' to get temperature");
+      BT.println("Pleasedont-die BT Node help");
+      BT.println("Send '1' to get value");
     }
   }
 }
