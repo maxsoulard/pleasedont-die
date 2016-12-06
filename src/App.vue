@@ -1,7 +1,7 @@
 <template>
   <div class="mdl-grid center-items" id="app">
-    <temperature-component></temperature-component>
     <plant-component></plant-component>
+    <temperature-component></temperature-component>
   </div>
 </template>
 
@@ -12,9 +12,6 @@ import Plant from './components/Plant.vue';
 
 export default {
   name: 'app',
-  components: {
-    Plant
-  },
   data: function() {
     return {}
   }

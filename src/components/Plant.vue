@@ -6,15 +6,13 @@
             </div>
             <div class="mdl-card__supporting-text">
                 <span v-if="plantNode.moisture">Terre : {{ plantNode.moisture }}</span><br><br>
-                <span class="lastupdate">Dernière mise à jour des données : {{ plantNode.date }} %</span>
+                <span class="lastupdate">Dernière mise à jour des données : {{ plantNode.date }}</span>
             </div>
             <div class="mdl-card__actions mdl-card--border">
                 <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" v-on:click="getValue">
                     Rafraîchir les données
                 </a>
-                <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" v-on:click="subscribeToNotifications">
-                    S'abonner aux notifications
-                </a>
+                <subscribe-component :dataCard="dataCard"></subscribe-component>
             </div>
         </div>
     </div>
@@ -27,22 +25,38 @@ export default {
         name: 'plant-component',
         data: function(){
             return {
-                plantNode: {soil: '1'}
+                plantNode: {},
+                displaySubscriptionForm: false,
+                dataCard: {
+                    name: "plante",
+                    idModal: "plant_modal_id",
+                    alertMsg: "TERRE TROP SECHE. ARROSEZ LA PLANTE. Merci !"
+                }
             }
         },
         created: function() {
-            this.getValue();
+            this.getValue()
         },
         methods: {
             getValue: function() {
-                this.$http.get(config.url+'/plant').then((response) => {
-                    this.plantNode = response.body;
+                this.$http.get(config.url+'/sensors/001403058F21').then((response) => {
+                    this.plantNode = response.body
                 }, (response) => {
                     // error callback
                 });
             },
-            subscribeToNotifications: function() {
+            subscribeToAlert: function(subscribeForm) {
+                var body = {
+                    email: subscribeForm.email,
+                    warninglevel: subscribeForm.warninglevel,
+                    alertMsg: this.dataCard.alertMsg,
+                    keyValue: "moisture"
+                }
+                this.$http.post(config.url+'/sensors/001403058F21/notifications', body).then((response) => {
                 // TODO
+                }, (response) => {
+                    // error callback
+                });
             }
         }
 }
