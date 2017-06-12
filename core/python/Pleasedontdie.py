@@ -29,6 +29,12 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/sensors', methods=['GET'])
+def read_sensor():
+    resp = _get_response()
+    return resp
+
+
 @app.route('/sensors/<id_sensor>', methods=['GET'])
 def read_sensor(id_sensor):
     resp = _get_response(id_sensor)
