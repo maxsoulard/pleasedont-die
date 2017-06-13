@@ -9,10 +9,6 @@ sudo pip install pybluez
 
 sudo pip install Flask
 sudo pip install -U flask-cors
-
-# DEPRECATED pairing with bt slave : sudo bluez-simple-agent hci# xx:xx:xx:xx:xx:xx
-# sudo bluez-simple-agent hci# 00:14:03:05:8F:21
-# sudo bluez-simple-agent hci# 98:D3:31:70:68:51
 ```
 
 ## How to pair to HC-05 bluetooth device, using bluetoothctl
