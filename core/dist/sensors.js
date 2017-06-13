@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var fs = require("fs");
 var Sensors = (function () {
     function Sensors(app) {
         this.app = app;
@@ -13,7 +14,11 @@ var Sensors = (function () {
         res.send('todo all sensors');
     };
     Sensors.prototype.getOneSensor = function (req, res) {
-        res.send('todo the sensor : ' + req.params.id);
+        fs.createReadStream('python/sensor_' + req.params.id + '.json')
+            .on('error', function () {
+            console.log('404 not found');
+        })
+            .pipe(res);
     };
     return Sensors;
 }());

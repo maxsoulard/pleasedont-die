@@ -1,4 +1,5 @@
 import express = require('express');
+import fs = require('fs');
 
 export class Sensors {
     private app: express.Application;
@@ -18,6 +19,10 @@ export class Sensors {
     }
 
     private getOneSensor(req: express.Request, res: express.Response): any {
-        res.send('todo the sensor : '+req.params.id);
+        fs.createReadStream('python/sensor_'+req.params.id+'.json')
+            .on('error', function() {
+                console.log('404 not found');
+            })
+            .pipe(res);
     }
 }
