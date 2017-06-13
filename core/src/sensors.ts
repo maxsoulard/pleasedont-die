@@ -20,8 +20,12 @@ export class Sensors {
 
     private getOneSensor(req: express.Request, res: express.Response): any {
         fs.createReadStream('python/sensor_'+req.params.id+'.json')
-            .on('error', function() {
-                console.log('404 not found');
+            .on('error', (err: any) => {
+                const codeStatus = err.code === 'ENOENT' ? 404 : 500;
+                res.status(codeStatus).end();
+            })
+            .on('end', () => {
+                res.end();
             })
             .pipe(res);
     }
