@@ -1,6 +1,7 @@
 # pleasedont-die
+> python
 
-# python
+## Setup
 
 ``` bash
 sudo apt-get install --no-install-recommends bluetooth bluez blueman
