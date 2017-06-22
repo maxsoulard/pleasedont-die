@@ -1,19 +1,21 @@
 import json
-from JsonHelper import *
+from MongoInstanceBuilder import *
+from EmailServer import *
 
 
 class EmailNotifier:
-    def __init__(self, config):
-        self.email = config['email']
-        self.warninglevel = config['warninglevel']
-        self.alertMsg = config['alertMsg']
-        self.keyValue = config['keyValue']
+    def __init__(self):
+        #self.email = config['email']
+        #self.warninglevel = config['warninglevel']
+        #self.alertMsg = config['alertMsg']
+        #self.keyValue = config['keyValue']
+        self.db = MongoInstanceBuilder().get_db()
+        self.emailserver = EmailServer()
 
-    def subscribe_to(self, sensor_id):
-        file_name = "sensor_"+sensor_id[:4]+".config"
-        with open(file_name, 'w') as f:
-            json.dump({'email':self.email, 'warninglevel': self.warninglevel, 'alertMsg': self.alertMsg, 'keyValue': self.keyValue}, f)
+    #TODO subscribe_to(self, sensor_id):
 
-    def notify(self, email, sensor_id):
-        #TODO
-        return
+    def notify(self, sensor_id):
+        subscribers = self.db.sensors.find_one({"_id": sensor_id})["subscribers"]
+        for subscriber in subscribers:
+            print "TODO notify by mail " + subscriber["mail"]
+            #self.emailserver.start_smtp().send_email_to(subscriber["mail"], "")
