@@ -6,6 +6,7 @@ var express = require("express");
 var Promise = require("bluebird");
 var mongodb = require("mongodb");
 var sensors_1 = require("./sensors");
+var cors = require("cors");
 var Server = (function () {
     function Server() {
         this.configure();
@@ -18,6 +19,7 @@ var Server = (function () {
         var _this = this;
         this.app = express();
         this.app.use(bodyParser.urlencoded({ extended: false }));
+        this.app.use(cors()); // allow all cors requests
         this.app.use(bodyParser.json());
         mongodb.MongoClient.connect("mongodb://192.168.0.17/pleasedont-die", { promiseLibrary: Promise })
             .catch(function (err) { return console.error(err.stack); })
