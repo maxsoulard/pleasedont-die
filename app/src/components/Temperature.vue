@@ -1,5 +1,5 @@
 <template>
-    <div class="mdl-cell mdl-cell--4-col temperature-component">
+    <div class="mdl-cell mdl-cell--3-col temperature-component">
         <div class="demo-card-square mdl-card mdl-shadow--2dp">
             <div id="temperatureCardTitle" class="mdl-card__title mdl-card--expand">
                 <h2 class="mdl-card__title-text">Température</h2>
@@ -21,6 +21,7 @@
 
 <script>
 import config from '../config.js';
+import axios from 'axios';
 
 export default {
     name: 'temperature-component',
@@ -40,8 +41,8 @@ export default {
     },
     methods: {
         getValue: function() {
-            this.$http.get(config.url+'/sensors/98D331706851').then((response) => {
-                this.temperatureNode = response.body;
+            axios.get(config.url+'/sensors/98:D3:31:70:68:51/data').then((response) => {
+                this.temperatureNode = response.data;
             }, (response) => {
                 // error callback
             });
@@ -53,11 +54,11 @@ export default {
                 alertMsg: this.dataCard.alertMsg,
                 keyValue: "temp"
             }
-            this.$http.post(config.url+'/sensors/98D331706851/notifications', body).then((response) => {
+            /*this.$http.post(config.url+'/sensors/98:D3:31:70:68:51/notifications', body).then((response) => {
                 // TODO
             }, (response) => {
                 // error callback
-            });
+            });*/
         }
     }
 }

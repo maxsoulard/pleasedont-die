@@ -1,5 +1,5 @@
 <template>
-    <div class="mdl-cell mdl-cell--4-col plant-component">
+    <div class="mdl-cell mdl-cell--3-col plant-component">
         <div class="demo-card-square mdl-card mdl-shadow--2dp">
             <div id="plantCardTitle" class="mdl-card__title mdl-card--expand">
                 <h2 class="mdl-card__title-text">Plante</h2>
@@ -20,6 +20,7 @@
 
 <script>
 import config from '../config.js';
+import axios from 'axios';
 
 export default {
         name: 'plant-component',
@@ -39,8 +40,8 @@ export default {
         },
         methods: {
             getValue: function() {
-                this.$http.get(config.url+'/sensors/001403058F21').then((response) => {
-                    this.plantNode = response.body
+                axios.get(config.url+'/sensors/00:14:03:05:8F:21/data').then((response) => {
+                    this.plantNode = response.data
                 }, (response) => {
                     // error callback
                 });
@@ -52,11 +53,11 @@ export default {
                     alertMsg: this.dataCard.alertMsg,
                     keyValue: "moisture"
                 }
-                this.$http.post(config.url+'/sensors/001403058F21/notifications', body).then((response) => {
+                /*this.$http.post(config.url+'/sensors/00:14:03:05:8F:21/notifications', body).then((response) => {
                 // TODO
                 }, (response) => {
                     // error callback
-                });
+                });*/
             }
         }
 }
