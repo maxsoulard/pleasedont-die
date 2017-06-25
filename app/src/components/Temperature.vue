@@ -25,6 +25,7 @@ import axios from 'axios';
 
 export default {
     name: 'temperature-component',
+    props: ['sensorid'],
     data: function(){
         return {
             temperatureNode: {},
@@ -41,7 +42,7 @@ export default {
     },
     methods: {
         getValue: function() {
-            axios.get(config.url+'/sensors/98:D3:31:70:68:51/data').then((response) => {
+            axios.get(config.url+'/sensors/'+this.sensorid+'/data').then((response) => {
                 this.temperatureNode = response.data;
             }, (response) => {
                 // error callback
@@ -54,7 +55,7 @@ export default {
                 alertMsg: this.dataCard.alertMsg,
                 keyValue: "temp"
             }
-            /*this.$http.post(config.url+'/sensors/98:D3:31:70:68:51/notifications', body).then((response) => {
+            /*this.$http.post(config.url+'/sensors/'+this.sensorid+'/notifications', body).then((response) => {
                 // TODO
             }, (response) => {
                 // error callback
