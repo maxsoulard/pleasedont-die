@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var fs = require("fs");
 var Sensors = (function () {
     function Sensors(app) {
         this.app = app;
@@ -9,20 +8,36 @@ var Sensors = (function () {
     Sensors.prototype.routes = function () {
         this.app.get('/sensors', this.getAllSensors);
         this.app.get('/sensors/:id', this.getOneSensor);
+        this.app.get('/sensors/:id/data', this.getData);
     };
     Sensors.prototype.getAllSensors = function (req, res) {
-        res.send('todo all sensors');
+        req.app.locals.db.collection('sensors').find().toArray(function (err, sensors) {
+            if (sensors)
+                res.send(sensors);
+            else
+                res.sendStatus(404);
+        });
     };
     Sensors.prototype.getOneSensor = function (req, res) {
-        fs.createReadStream('python/sensor_' + req.params.id + '.json')
-            .on('error', function (err) {
-            var codeStatus = err.code === 'ENOENT' ? 404 : 500;
-            res.status(codeStatus).end();
-        })
-            .on('end', function () {
-            res.end();
-        })
-            .pipe(res);
+        var query = { _id: req.params.id };
+        req.app.locals.db.collection('sensors').findOne(query)
+            .then(function (sensor) {
+            if (sensor)
+                res.send(sensor);
+            else
+                res.sendStatus(404);
+        });
+    };
+    Sensors.prototype.getData = function (req, res) {
+        var options = { "sort": [['_id', 'desc']] };
+        var query = { sensorid: req.params.id };
+        req.app.locals.db.collection('data').findOne(query, options)
+            .then(function (sensor) {
+            if (sensor)
+                res.send(sensor);
+            else
+                res.sendStatus(404);
+        });
     };
     return Sensors;
 }());

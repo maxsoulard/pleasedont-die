@@ -2,7 +2,8 @@
   
 import bodyParser = require('body-parser');
 import express = require('express');
-import fs = require('fs');
+import Promise = require("bluebird");
+import mongodb = require('mongodb');
 import { Sensors } from "./sensors";
 
 class Server {
@@ -21,7 +22,15 @@ class Server {
         this.app = express();
         this.app.use(bodyParser.urlencoded({ extended: false }));
         this.app.use(bodyParser.json());
-        this.app.listen('8888');
+        mongodb.MongoClient.connect("mongodb://192.168.0.17/pleasedont-die", { promiseLibrary: Promise })
+            .catch(err => console.error(err.stack))
+            .then(db => {
+                this.app.locals.db = db;
+                this.app.listen("8888", () => {
+                    console.log(`Node.js app is listening at http://localhost:8888`);
+                });
+            });
+
     }
 
     private routes(): void {
