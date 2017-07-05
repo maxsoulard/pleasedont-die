@@ -32,7 +32,6 @@ export default {
             displaySubscriptionForm: false,
             dataCard: {
                 name: "temperature",
-                alertMsg: "ALERTE INDICATIVE TEMPERATURE",
                 idModal: "temperature_modal_id"
             }
         }
@@ -49,17 +48,17 @@ export default {
             });
         },
         subscribeToAlert: function(subscribeForm) {
-            var body = {
-                email: subscribeForm.email,
+            const body = {
+                mail: subscribeForm.email,
                 warninglevel: subscribeForm.warninglevel,
                 alertMsg: this.dataCard.alertMsg,
                 keyValue: "temp"
             }
-            /*this.$http.post(config.url+'/sensors/'+this.sensorid+'/notifications', body).then((response) => {
+            axios.post(config.url+'/sensors/'+this.sensorid+'/subscribers', body).then((response) => {
                 // TODO
             }, (response) => {
                 // error callback
-            });*/
+            });
         }
     }
 }
