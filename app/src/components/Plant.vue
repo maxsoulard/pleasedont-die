@@ -4,10 +4,14 @@
             <div id="plantCardTitle" class="mdl-card__title mdl-card--expand">
                 <h2 class="mdl-card__title-text">Plante</h2>
             </div>
-            <div class="mdl-card__supporting-text">
-                <span v-if="plantNode.moisture">Terre : {{ plantNode.moisture }}</span><br><br>
+            <div class="mdl-card__supporting-text" v-if="plantNode.moisture">
+                <span>Terre : {{ plantNode.moisture }}</span><br><br>
                 <span class="lastupdate">Dernière mise à jour des données : {{ plantNode.date }}</span>
             </div>
+            <div class="mdl-card__supporting-text" v-else>
+                <span>{{ error }}</span><br /><br /><br /><br />
+            </div>
+                <span v-else>{{ error }}</span>
             <div class="mdl-card__actions mdl-card--border">
                 <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" v-on:click="getValue">
                     Rafraîchir les données
@@ -23,42 +27,43 @@ import config from '../config.js';
 import axios from 'axios';
 
 export default {
-        name: 'plant-component',
-        data: function(){
-            return {
-                plantNode: {},
-                displaySubscriptionForm: false,
-                dataCard: {
-                    name: "plante",
-                    idModal: "plant_modal_id",
-                    alertMsg: "TERRE TROP SECHE. ARROSEZ LA PLANTE. Merci !"
-                }
-            }
-        },
-        created: function() {
-            this.getValue()
-        },
-        methods: {
-            getValue: function() {
-                axios.get(config.url+'/sensors/00:14:03:05:8F:21/data').then((response) => {
-                    this.plantNode = response.data
-                }, (response) => {
-                    // error callback
-                });
-            },
-            subscribeToAlert: function(subscribeForm) {
-                var body = {
-                    email: subscribeForm.email,
-                    warninglevel: subscribeForm.warninglevel,
-                    alertMsg: this.dataCard.alertMsg,
-                    keyValue: "moisture"
-                }
-                /*this.$http.post(config.url+'/sensors/00:14:03:05:8F:21/notifications', body).then((response) => {
-                // TODO
-                }, (response) => {
-                    // error callback
-                });*/
+    name: 'plant-component',
+    props: ['sensorid'],
+    data: function(){
+        return {
+            plantNode: {},
+            error: '',
+            displaySubscriptionForm: false,
+            dataCard: {
+                name: "plante",
+                idModal: "plant_modal_id"
             }
         }
+    },
+    created: function() {
+        this.getValue()
+    },
+    methods: {
+        getValue: function() {
+            axios.get(config.url+'/sensors/'+this.sensorid+'/data').then((response) => {
+                this.plantNode = response.data
+            }, (err) => {
+                this.error = err.response.status + '-' + err.response.data;
+            });
+        },
+        subscribeToAlert: function(subscribeForm) {
+            const body = {
+                mail: subscribeForm.email,
+                warninglevel: subscribeForm.warninglevel,
+                alertMsg: this.dataCard.alertMsg,
+                keyValue: "moisture"
+            }
+            axios.post(config.url+'/sensors/'+this.sensorid+'/subscribers', body).then((response) => {
+            // TODO
+            }, (response) => {
+                // error callback
+            });
+        }
+    }
 }
 </script>
