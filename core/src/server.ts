@@ -37,6 +37,10 @@ class Server {
 
     private routes(): void {
         const sensors = new Sensors(this.app);
+        this.app.get('/sensors', sensors.getAllSensors);
+        this.app.get('/sensors/:id', sensors.getOneSensor);
+        this.app.get('/sensors/:id/data', sensors.getData);
+        this.app.post('/sensors/:id/subscribers', sensors.postSubscriber.bind(sensors));
     }
 }
 
