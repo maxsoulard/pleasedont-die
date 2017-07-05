@@ -3,27 +3,19 @@ import mongodb = require('mongodb');
 
 export class Sensors {
     private app: express.Application;
-    private db: mongodb.Db;
 
     constructor(app: express.Application) {
-        this.app = app;
-        this.routes();      
+        this.app = app;   
     }
 
-    private routes() {
-        this.app.get('/sensors', this.getAllSensors);
-        this.app.get('/sensors/:id', this.getOneSensor);
-        this.app.get('/sensors/:id/data', this.getData);
-    }
-
-    private getAllSensors(req: express.Request, res: express.Response): void {
+    public getAllSensors(req: express.Request, res: express.Response): void {
         req.app.locals.db.collection('sensors').find().toArray((err: any, sensors: Sensor[]) => {
                 if (sensors)     res.send(sensors);
                 else            res.sendStatus(404);
         });
     }
 
-    private getOneSensor(req: express.Request, res: express.Response): void {
+    public getOneSensor(req: express.Request, res: express.Response): void {
         const query = { _id: req.params.id };
 
         req.app.locals.db.collection('sensors').findOne(query)
@@ -33,7 +25,7 @@ export class Sensors {
             });
     }
 
-    private getData(req: express.Request, res: express.Response): void {
+    public getData(req: express.Request, res: express.Response): void {
         let options = {"sort": [['_id','desc']]}
         const query = { sensorid: req.params.id };
 
@@ -42,6 +34,37 @@ export class Sensors {
                 if (sensor)     res.send(sensor);
                 else            res.sendStatus(404);
             });
+    }
+    
+    public postSubscriber(req: express.Request, res: express.Response): void {
+        let options = {"sort": [['_id','desc']]}
+        const query = { _id: req.params.id };
+        this.getSensorWithParticularSubscriber(req.app.locals.db, req.params.id, req.body.mail)
+            .then((sensor: Sensor) => {
+                if (sensor) {
+                    res.sendStatus(422); // resource already exists
+                    throw "Resource already exists";
+                }
+            })
+            .then(function() {  // else post new subscriber
+                return req.app.locals.db.collection('sensors').updateOne(
+                    {_id: req.params.id},
+                    {
+                        $push: {
+                            "subscribers": req.body
+                        }
+                    }
+                );
+            })
+            .then((subscriber: Subscriber) => {
+                if (subscriber) res.sendStatus(200); // TODO send back subscriber just created
+                else            res.sendStatus(404);
+            });
+    }
+
+    private getSensorWithParticularSubscriber(db: any, sensorId: String, mail: String) {
+        const querySubscriberAlreadyExists = { _id : sensorId, subscribers: {$elemMatch: {mail: mail}}};
+        return db.collection('sensors').findOne(querySubscriberAlreadyExists)
     }
 }
 

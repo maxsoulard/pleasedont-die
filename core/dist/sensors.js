@@ -3,13 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Sensors = (function () {
     function Sensors(app) {
         this.app = app;
-        this.routes();
     }
-    Sensors.prototype.routes = function () {
-        this.app.get('/sensors', this.getAllSensors);
-        this.app.get('/sensors/:id', this.getOneSensor);
-        this.app.get('/sensors/:id/data', this.getData);
-    };
     Sensors.prototype.getAllSensors = function (req, res) {
         req.app.locals.db.collection('sensors').find().toArray(function (err, sensors) {
             if (sensors)
@@ -38,6 +32,34 @@ var Sensors = (function () {
             else
                 res.sendStatus(404);
         });
+    };
+    Sensors.prototype.postSubscriber = function (req, res) {
+        var options = { "sort": [['_id', 'desc']] };
+        var query = { _id: req.params.id };
+        this.getSensorWithParticularSubscriber(req.app.locals.db, req.params.id, req.body.mail)
+            .then(function (sensor) {
+            if (sensor) {
+                res.sendStatus(422); // resource already exists
+                throw "Resource already exists";
+            }
+        })
+            .then(function () {
+            return req.app.locals.db.collection('sensors').updateOne({ _id: req.params.id }, {
+                $push: {
+                    "subscribers": req.body
+                }
+            });
+        })
+            .then(function (subscriber) {
+            if (subscriber)
+                res.sendStatus(200); // TODO send back subscriber just created
+            else
+                res.sendStatus(404);
+        });
+    };
+    Sensors.prototype.getSensorWithParticularSubscriber = function (db, sensorId, mail) {
+        var querySubscriberAlreadyExists = { _id: sensorId, subscribers: { $elemMatch: { mail: mail } } };
+        return db.collection('sensors').findOne(querySubscriberAlreadyExists);
     };
     return Sensors;
 }());
