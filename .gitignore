@@ -9,3 +9,4 @@ arduino/*/libraries
 .vscode/*
 *libraries*
 */tmp/*
+*.pyc
