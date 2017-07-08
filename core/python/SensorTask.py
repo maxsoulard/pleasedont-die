@@ -11,25 +11,30 @@ class SensorTask():
         self.bd_addr = bd_addr
         self.persist = SensorDataPersist()
         self.emailer = EmailNotifier()
+        self.db = MongoInstanceBuilder().get_db()
 
     def _load(self, value):
-        data = json.loads(value)
-        data['date'] = time.strftime("%D-%H:%M:%S")
-        data['sensorid'] = self.bd_addr
-        return data
+        self.data = json.loads(value)
+        self.data['date'] = time.strftime("%D-%H:%M:%S")
+        self.data['sensorid'] = self.bd_addr
+        return self.data
 
     def execute(self):
         self.sensor.start()
         self.sensor.join()
         value = self.sensor.value
         self.persist.write(self._load(value))
-        self.emailer.notify(self.bd_addr)
-        #self._check_value(value)
+        self._notify_by_mail(value)
 
-    def _check_value(self, value):
-        value_to_check = self.data[key]
-        if self._is_level_higher_than(value_to_check):
-            self.emailer.start_smtp().send_email_to(self.config['email'], self.config['alertMsg'])
+    def _notify_by_mail(self, value):
+        subscribers = self.db.sensors.find_one({"_id": self.bd_addr})["subscribers"]
+        for subscriber in subscribers:
+            key = subscriber["keyValue"]
+            value_to_check = self.data[key]
+            if self._is_level_higher_than(subscriber["warninglevel"], value_to_check):
+                print "Notify by mail " + subscriber["mail"]
+                self.emailer.notify(self.bd_addr, subscriber)
 
-    def _is_level_higher_than(self, value):
-        return float(value) < float(self.config['warninglevel'])
+
+    def _is_level_higher_than(self, max_value, actual_value):
+        return float(actual_value) > float(23)
