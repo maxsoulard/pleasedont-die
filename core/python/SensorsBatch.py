@@ -3,10 +3,11 @@ from SensorTask import *
 
 
 if __name__ == '__main__':
+    db = MongoInstanceBuilder().get_db()
+    sensors = db.sensors.find({})
     LOCK = threading.Lock()
     BT_TASKS = []
-    BT_TASKS.append(SensorTask(LOCK, "98:D3:31:70:68:51"))
-    BT_TASKS.append(SensorTask(LOCK, "00:14:03:05:8F:21"))
-
+    for sensor in sensors:
+        BT_TASKS.append(SensorTask(LOCK, sensor["_id"]))
     for task in BT_TASKS:
         task.execute()
