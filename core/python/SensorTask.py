@@ -1,6 +1,7 @@
 from Sensor import *
 from SensorDataPersist import *
-from EmailNotifier import *
+from EmailPlantNotifier import *
+from EmailTemperatureNotifier import *
 import json
 import time
 
@@ -27,14 +28,18 @@ class SensorTask():
         self._notify_by_mail(value)
 
     def _notify_by_mail(self, value):
-        subscribers = self.db.sensors.find_one({"_id": self.bd_addr})["subscribers"]
-        for subscriber in subscribers:
+        sensor = self.db.sensors.find_one({"_id": self.bd_addr})
+        for subscriber in sensor["subscribers"]:
             key = subscriber["keyValue"]
             value_to_check = self.data[key]
-            if self._is_level_higher_than(subscriber["warninglevel"], value_to_check):
+            if sensor["type"] == "plant" and float(value_to_check) < float(subscriber["warninglevel"]):
+                print "Notify by mail " + subscriber["mail"] + value_to_check
+                emailer = EmailPlantNotifier()
+                emailer.notify(subscriber)
+            elif sensor["type"] == "temperature" and float(value_to_check) > float(subscriber["warninglevel"]):
                 print "Notify by mail " + subscriber["mail"]
-                self.emailer.notify(self.bd_addr, subscriber)
-
+                emailer = EmailTemperatureNotifier()
+                emailer.notify(subscriber)
 
     def _is_level_higher_than(self, max_value, actual_value):
-        return float(actual_value) > float(23)
+        return float(actual_value) > float(max_value)
