@@ -31,11 +31,11 @@ class Sensor(Thread):
             pass
         self.value = resultstr
         self.sock.close()
-        print "received %s" % resultstr
+        print("received %s" % resultstr)
         return resultstr
 
     def run(self):
-        print "%s is starting..." %(self.name)
+        print("%s is starting..." %(self.name))
         self.lock.acquire()
         self.__connect__()
         self.value = self.__read_value__()

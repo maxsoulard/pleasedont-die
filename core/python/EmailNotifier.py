@@ -1,21 +1,34 @@
-import json
-from MongoInstanceBuilder import *
-from EmailServer import *
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
+ME = "pleasedontdie.msoulard@gmail.com"
+PASSWORD = "pleasedontdie1234"
 
 class EmailNotifier:
     def __init__(self):
-        #self.email = config['email']
-        #self.warninglevel = config['warninglevel']
-        #self.alertMsg = config['alertMsg']
-        #self.keyValue = config['keyValue']
-        self.db = MongoInstanceBuilder().get_db()
-        self.emailserver = EmailServer()
+        self.server = smtplib.SMTP('smtp.gmail.com', 587)
 
-    #TODO subscribe_to(self, sensor_id):
+    def start_smtp(self):
+        self.server.starttls()
+        self.server.login(ME, PASSWORD)
+        return self
 
-    def notify(self, sensor_id):
-        subscribers = self.db.sensors.find_one({"_id": sensor_id})["subscribers"]
-        for subscriber in subscribers:
-            print "TODO notify by mail " + subscriber["mail"]
-            #self.emailserver.start_smtp().send_email_to(subscriber["mail"], "")
+    def send_mail_to(self, subscriber_mail, msg_as_string):
+        self.start_smtp()
+        self.server.sendmail("pleasedontdie.msoulard@gmail.com", subscriber_mail, msg_as_string)
+
+    def get_message(self, dest, text, html):
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = "Aidez-moi"
+        msg['From'] = ME
+        msg['To'] = dest
+        # Record the MIME types of both parts - text/plain and text/html.
+        part1 = MIMEText(text, 'plain')
+        part2 = MIMEText(html, 'html')
+        msg.attach(part1)
+        msg.attach(part2)
+        return msg
+
+    def quit(self):
+        self.server.quit()
