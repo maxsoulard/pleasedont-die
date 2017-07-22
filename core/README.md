@@ -1,5 +1,5 @@
 # pleasedont-die
-> python
+Helps keeping plant alive by monitoring them.
 
 ## Setup
 
