@@ -1,4 +1,4 @@
-# pleasedont-die
+# pleasedont-die core
 Helps keeping plant alive by monitoring them.
 
 ## Setup
