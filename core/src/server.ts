@@ -37,10 +37,16 @@ class Server {
 
     private routes(): void {
         const sensors = new Sensors(this.app);
+        this.app.get('/api/health', this.healthCheck);
         this.app.get('/sensors', sensors.getAllSensors);
         this.app.get('/sensors/:id', sensors.getOneSensor);
         this.app.get('/sensors/:id/data', sensors.getData);
         this.app.post('/sensors/:id/subscribers', sensors.postSubscriber.bind(sensors));
+        this.app.delete('/sensors/:id/subscribers/:mail', sensors.deleteSubscriber.bind(sensors));
+    }
+
+    private healthCheck(req: express.Request, res: express.Response): void {
+        res.sendStatus(200);
     }
 }
 

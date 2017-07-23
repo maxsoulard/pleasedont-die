@@ -36,6 +36,7 @@ var Sensors = (function () {
     Sensors.prototype.postSubscriber = function (req, res) {
         var options = { "sort": [['_id', 'desc']] };
         var query = { _id: req.params.id };
+        var push = { $push: { "subscribers": req.body } };
         this.getSensorWithParticularSubscriber(req.app.locals.db, req.params.id, req.body.mail)
             .then(function (sensor) {
             if (sensor) {
@@ -44,17 +45,18 @@ var Sensors = (function () {
             }
         })
             .then(function () {
-            return req.app.locals.db.collection('sensors').updateOne({ _id: req.params.id }, {
-                $push: {
-                    "subscribers": req.body
-                }
-            });
+            return req.app.locals.db.collection('sensors').updateOne({ _id: req.params.id }, push);
         })
             .then(function (subscriber) {
-            if (subscriber)
-                res.sendStatus(200); // TODO send back subscriber just created
-            else
-                res.sendStatus(404);
+            res.sendStatus(subscriber ? 200 : 404); // TODO send back subscriber just created
+        });
+    };
+    Sensors.prototype.deleteSubscriber = function (req, res) {
+        var find = { _id: req.params.id };
+        var pull = { $pull: { "subscribers": { mail: req.params.mail } } };
+        req.app.locals.db.collection('sensors').updateOne(find, pull)
+            .then(function () {
+            res.sendStatus(200);
         });
     };
     Sensors.prototype.getSensorWithParticularSubscriber = function (db, sensorId, mail) {
