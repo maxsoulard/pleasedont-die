@@ -41,7 +41,7 @@ export default {
     },
     methods: {
         getValue: function() {
-            axios.get(config.url+'/sensors/'+this.sensorid+'/data').then((response) => {
+            axios.get(config.url+'/api/sensors/'+this.sensorid+'/data').then((response) => {
                 this.temperatureNode = response.data;
             }, (response) => {
                 // error callback
@@ -54,7 +54,7 @@ export default {
                 alertMsg: this.dataCard.alertMsg,
                 keyValue: "temp"
             }
-            axios.post(config.url+'/sensors/'+this.sensorid+'/subscribers', body).then((response) => {
+            axios.post(config.url+'/api/sensors/'+this.sensorid+'/subscribers', body).then((response) => {
                 // TODO
             }, (response) => {
                 // error callback

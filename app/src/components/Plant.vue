@@ -45,7 +45,7 @@ export default {
     },
     methods: {
         getValue: function() {
-            axios.get(config.url+'/sensors/'+this.sensorid+'/data').then((response) => {
+            axios.get(config.url+'/api/sensors/'+this.sensorid+'/data').then((response) => {
                 this.plantNode = response.data
             }, (err) => {
                 this.error = err.response.status + '-' + err.response.data;
@@ -58,7 +58,7 @@ export default {
                 alertMsg: this.dataCard.alertMsg,
                 keyValue: "moisture"
             }
-            axios.post(config.url+'/sensors/'+this.sensorid+'/subscribers', body).then((response) => {
+            axios.post(config.url+'/api/sensors/'+this.sensorid+'/subscribers', body).then((response) => {
             // TODO
             }, (response) => {
                 // error callback

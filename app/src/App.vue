@@ -22,7 +22,7 @@ export default {
     }
   },
   mounted: function() {
-      axios.get(config.url+'/sensors').then((response) => {
+      axios.get(config.url+'/api/sensors').then((response) => {
         this.sensors = response.data
       }, (response) => {
           // error callback
