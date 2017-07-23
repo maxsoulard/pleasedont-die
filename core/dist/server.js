@@ -33,11 +33,11 @@ var Server = (function () {
     Server.prototype.routes = function () {
         var sensors = new sensors_1.Sensors(this.app);
         this.app.get('/api/health', this.healthCheck);
-        this.app.get('/sensors', sensors.getAllSensors);
-        this.app.get('/sensors/:id', sensors.getOneSensor);
-        this.app.get('/sensors/:id/data', sensors.getData);
-        this.app.post('/sensors/:id/subscribers', sensors.postSubscriber.bind(sensors));
-        this.app.delete('/sensors/:id/subscribers/:mail', sensors.deleteSubscriber.bind(sensors));
+        this.app.get('/api/sensors', sensors.getAllSensors);
+        this.app.get('/api/sensors/:id', sensors.getOneSensor);
+        this.app.get('/api/sensors/:id/data', sensors.getData);
+        this.app.post('/api/sensors/:id/subscribers', sensors.postSubscriber.bind(sensors));
+        this.app.delete('/api/sensors/:id/subscribers/:mail', sensors.deleteSubscriber.bind(sensors));
     };
     Server.prototype.healthCheck = function (req, res) {
         res.sendStatus(200);
