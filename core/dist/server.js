@@ -5,8 +5,10 @@ var bodyParser = require("body-parser");
 var express = require("express");
 var Promise = require("bluebird");
 var mongodb = require("mongodb");
-var sensors_1 = require("./sensors");
 var cors = require("cors");
+var nconf = require("nconf");
+var sensors_1 = require("./sensors");
+var subscribers_1 = require("./subscribers");
 var Server = (function () {
     function Server() {
         this.configure();
@@ -21,7 +23,7 @@ var Server = (function () {
         this.app.use(bodyParser.urlencoded({ extended: false }));
         this.app.use(cors()); // allow all cors requests
         this.app.use(bodyParser.json());
-        mongodb.MongoClient.connect("mongodb://192.168.0.17/pleasedont-die", { promiseLibrary: Promise })
+        mongodb.MongoClient.connect("mongodb://" + nconf.get('mongodb:host') + "/" + nconf.get('mongodb:db'), { promiseLibrary: Promise })
             .catch(function (err) { return console.error(err.stack); })
             .then(function (db) {
             _this.app.locals.db = db;
@@ -31,17 +33,20 @@ var Server = (function () {
         });
     };
     Server.prototype.routes = function () {
-        var sensors = new sensors_1.Sensors(this.app);
+        var sensors = new sensors_1.Sensors();
+        var subscribers = new subscribers_1.Subscribers();
         this.app.get('/api/health', this.healthCheck);
         this.app.get('/api/sensors', sensors.getAllSensors);
         this.app.get('/api/sensors/:id', sensors.getOneSensor);
         this.app.get('/api/sensors/:id/data', sensors.getData);
-        this.app.post('/api/sensors/:id/subscribers', sensors.postSubscriber.bind(sensors));
-        this.app.delete('/api/sensors/:id/subscribers/:mail', sensors.deleteSubscriber.bind(sensors));
+        this.app.post('/api/sensors/:id/subscribers', function (req, res) { return subscribers.postSubscriber(req, res); });
+        this.app.delete('/api/sensors/:id/subscribers/:mail', function (req, res) { return subscribers.deleteSubscriber(req, res); });
     };
     Server.prototype.healthCheck = function (req, res) {
         res.sendStatus(200);
     };
     return Server;
 }());
+nconf.argv()
+    .file('../config.json');
 var server = Server.start();

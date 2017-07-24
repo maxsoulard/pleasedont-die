@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js --mongodb:host 192.168.0.17 --mongodb:db pleasedont-die"
   },
   "author": "maxsoulard",
   "license": "ISC",
@@ -15,6 +15,7 @@
     "@types/cors": "^2.8.1",
     "@types/express": "^4.0.36",
     "@types/mongodb": "^2.2.6",
+    "@types/nconf": "0.0.34",
     "@types/node": "^7.0.29",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
@@ -26,6 +27,7 @@
     "mongodb": "^2.2.29",
     "mongodb-core": "^2.1.13",
     "mongojs": "^2.4.0",
+    "nconf": "^0.8.4",
     "node-gyp": "^3.6.2",
     "typings": "^2.1.1"
   }
