@@ -24,7 +24,7 @@ export class Subscribers {
                     {_id: req.params.id}, push);
             })
             .then((subscriber: Subscriber) => {
-                res.sendStatus(subscriber ? 200: 404); // TODO send back subscriber just created
+                res.sendStatus(subscriber ? 201: 404); // TODO send back subscriber just created 
             });
     }
 
@@ -33,7 +33,7 @@ export class Subscribers {
         const pull = {$pull: { "subscribers" : {mail: req.params.mail}}};
         req.app.locals.db.collection('sensors').updateOne(find, pull)
             .then(() => {
-                res.sendStatus(200);
+                res.sendStatus(204);
             });
     }
 

@@ -18,7 +18,7 @@ var Subscribers = (function () {
             return req.app.locals.db.collection('sensors').updateOne({ _id: req.params.id }, push);
         })
             .then(function (subscriber) {
-            res.sendStatus(subscriber ? 200 : 404); // TODO send back subscriber just created
+            res.sendStatus(subscriber ? 201 : 404); // TODO send back subscriber just created 
         });
     };
     Subscribers.prototype.deleteSubscriber = function (req, res) {
@@ -26,7 +26,7 @@ var Subscribers = (function () {
         var pull = { $pull: { "subscribers": { mail: req.params.mail } } };
         req.app.locals.db.collection('sensors').updateOne(find, pull)
             .then(function () {
-            res.sendStatus(200);
+            res.sendStatus(204);
         });
     };
     Subscribers.prototype.getSensorWithParticularSubscriber = function (db, sensorId, mail) {
