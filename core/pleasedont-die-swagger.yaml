@@ -1,0 +1,158 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Pleasedont-die API
+basePath: /api
+tags:
+  - name: sensor
+schemes:
+  - http
+paths:
+  /sensors:
+    get:
+      tags:
+        - sensor
+      summary: Get all sensors
+      operationId: getSensors
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Sensors'
+  '/sensors/{id}':
+    get:
+      tags:
+        - sensor
+      summary: Get specified sensor
+      parameters:
+        - name: id
+          in: path
+          description: The sensor id
+          required: true
+          type: string
+      operationId: getSensor
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Sensor'
+  '/sensors/{id}/data':
+    get:
+      tags:
+        - sensor
+      summary: Get specified sensor data
+      parameters:
+        - name: id
+          in: path
+          description: The sensor id
+          required: true
+          type: string
+      operationId: getSensorData
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/SensorData'
+  '/sensors/{id}/subscribers':
+    get:
+      tags:
+        - sensor
+      summary: Get specified sensor subscribers
+      parameters:
+        - name: id
+          in: path
+          description: The sensor id
+          required: true
+          type: string
+      operationId: getSubscribers
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Subscribers'
+    post:
+      tags:
+        - sensor
+      summary: Add a new subscriber to this sensor
+      parameters:
+        - name: id
+          in: path
+          description: The sensor id
+          required: true
+          type: string
+      operationId: addSubscriber
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: OK created
+          schema:
+            $ref: '#/definitions/Subscriber'
+  '/sensors/{id}/subscribers/{mail}':
+    delete:
+      tags:
+        - sensor
+      summary: Delete an existing subscriber to this sensor
+      parameters:
+        - name: id
+          in: path
+          description: The sensor id
+          required: true
+          type: string
+        - name: mail
+          in: path
+          description: The subscriber's mail to delete
+          required: true
+          type: string
+      operationId: deleteSubscriber
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: OK deleted
+definitions:
+  Sensors:
+    type: array
+    items:
+      $ref: '#/definitions/Sensor'
+  Sensor:
+    type: object
+    properties:
+      _id:
+        type: string
+      type:
+        type: string
+      date:
+        type: object
+  SensorData:
+    type: object
+    properties:
+      _id:
+        type: string
+      date:
+        type: object
+      sensorid:
+        type: string
+      hum:
+        type: string
+      temp:
+        type: string
+      soil:
+        type: string
+  Subscribers:
+    type: array
+    items:
+      $ref: '#/definitions/Subscriber'
+  Subscriber:
+    type: object
+    properties:
+      mail:
+        type: string
