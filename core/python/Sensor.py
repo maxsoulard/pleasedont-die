@@ -40,7 +40,7 @@ class Sensor(Thread):
             self.lock.acquire()
             self.__connect__()
             self.value = self.__read_value__()
-        except:
-            print('Could not read value from BT device.')
+        except IOError:
+            print('Could not connect to BT device.')
         finally:
             self.lock.release()
