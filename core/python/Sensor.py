@@ -9,11 +9,11 @@ class Sensor(Thread):
         self.port = 1
         self.sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
         self.lock = lock
-        self.value = ""
+        self.value = None
 
     def __connect__(self):
         self.sock.connect((self.bd_addr, self.port))
-        print "BT connected - %s" % (self.bd_addr)
+        print("BT connected - " + self.bd_addr)
         return self
 
     def __read_value__(self):
@@ -36,7 +36,11 @@ class Sensor(Thread):
 
     def run(self):
         print("%s is starting..." %(self.name))
-        self.lock.acquire()
-        self.__connect__()
-        self.value = self.__read_value__()
-        self.lock.release()
+        try:
+            self.lock.acquire()
+            self.__connect__()
+            self.value = self.__read_value__()
+        except:
+            print('Could not read value from BT device.')
+        finally:
+            self.lock.release()
