@@ -5,7 +5,8 @@
   "main": "dist/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/server.js --mongodb:host 192.168.0.17 --mongodb:db pleasedont-die"
+    "start": "node dist/server.js --mongodb:host 192.168.1.17 --mongodb:db pleasedont-die",
+    "mongo": "docker run -v /data/db:/data/db -p 27017:27017 jixer/rpi-mongo &"
   },
   "author": "maxsoulard",
   "license": "ISC",
