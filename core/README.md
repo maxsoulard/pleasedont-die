@@ -4,16 +4,14 @@ Helps keeping plant alive by monitoring them.
 ## Setup
 
 ``` bash
-sudo apt-get install --no-install-recommends bluetooth bluez blueman python-dev libbluetooth-dev python-serial bluez-simple-agent
-sudo pip install pybluez
-
-python -m pip install pymongo
+sudo apt-get update && sudo apt-get install --no-install-recommends python python-pip python-dev bluetooth bluez blueman libbluetooth-dev python-serial
+sudo pip install pybluez && sudo pip install pymongo
 ```
 
 ## How to pair to HC-05 bluetooth device, using bluetoothctl
 ``` bash
 
-$ bluetoothctl
+sudo bluetoothctl
 [NEW] Controller 5C:F3:70:71:86:78 server [default]
 [bluetooth]# power on
 Changing power on succeeded
