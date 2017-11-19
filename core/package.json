@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dist/server.js --mongodb:host 172.17.0.1/16 --mongodb:db pleasedont-die",
     "mongo": "docker run -v /data/db:/data/db -p 27017:27017 --name pdd-mongo-container jixer/rpi-mongo &",
-    "docker:build": "docker build -t pleasedont-die .",
+    "docker:build": "docker build --no-cache -t pleasedont-die .",
     "docker:start": "npm run mongo && docker run -p 8888:8888 -d --name pdd-api-container pleasedont-die",
     "docker:stop": "docker stop pdd-mongo-container && docker rm pdd-mongo-container && docker stop pdd-api-container && docker rm pdd-api-container",
     "docker:restart": "docker stop pdd-mongo-container && docker stop pdd-api-container && docker start pdd-mongo-container && docker start pdd-api-container"
