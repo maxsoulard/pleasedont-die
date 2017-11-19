@@ -9,7 +9,7 @@ var cors = require("cors");
 var nconf = require("nconf");
 var sensors_1 = require("./sensors");
 var subscribers_1 = require("./subscribers");
-var Server = (function () {
+var Server = /** @class */ (function () {
     function Server() {
         this.configure();
         this.routes();
@@ -39,6 +39,8 @@ var Server = (function () {
         this.app.get('/api/sensors', sensors.getAllSensors);
         this.app.get('/api/sensors/:id', sensors.getOneSensor);
         this.app.get('/api/sensors/:id/data', sensors.getData);
+        // this.app.post('/api/sensors/:id/data', sensors.postData);
+        this.app.patch('/api/sensors/:id', sensors.patchSensor);
         this.app.post('/api/sensors/:id/subscribers', function (req, res) { return subscribers.postSubscriber(req, res); });
         this.app.delete('/api/sensors/:id/subscribers/:mail', function (req, res) { return subscribers.deleteSubscriber(req, res); });
     };

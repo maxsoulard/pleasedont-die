@@ -27,7 +27,7 @@ class Server {
         this.app.use(bodyParser.urlencoded({ extended: false }));
         this.app.use(cors()); // allow all cors requests
         this.app.use(bodyParser.json());
-        mongodb.MongoClient.connect("mongodb://"+ nconf.get('mongodb:host') +"/" + nconf.get('mongodb:db'), { promiseLibrary: Promise })
+        mongodb.MongoClient.connect(`mongodb://${nconf.get('mongodb:host')}/${nconf.get('mongodb:db')}`, { promiseLibrary: Promise })
             .catch(err => console.error(err.stack))
             .then(db => {
                 this.app.locals.db = db;
@@ -44,6 +44,8 @@ class Server {
         this.app.get('/api/sensors', sensors.getAllSensors);
         this.app.get('/api/sensors/:id', sensors.getOneSensor);
         this.app.get('/api/sensors/:id/data', sensors.getData);
+        // this.app.post('/api/sensors/:id/data', sensors.postData);
+        this.app.patch('/api/sensors/:id', sensors.patchSensor);
         this.app.post('/api/sensors/:id/subscribers', (req, res) => subscribers.postSubscriber(req, res));
         this.app.delete('/api/sensors/:id/subscribers/:mail', (req, res) => subscribers.deleteSubscriber(req, res));
     }
