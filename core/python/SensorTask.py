@@ -33,19 +33,15 @@ class SensorTask():
         sensor = self.db.sensors.find_one({"_id": self.bd_addr})
         try:
             _subscribers = sensor["subscribers"]
+            for _subscriber in _subscribers:
+                if self._is_sensor_a_plant(sensor):
+                    value_to_check = self.data["moisture"]
+                    if float(value_to_check) < float(_subscriber["warninglevel"]):
+                        print("Notify by mail " + _subscriber["mail"] + value_to_check)
+                        emailer = EmailPlantNotifier()
+                        emailer.notify(_subscriber)
         except:
             _subscribers = []
-        for _subscriber in _subscribers:
-            key = _subscriber["keyValue"]
-            value_to_check = self.data[key]
-            if sensor["type"] == "plant" and float(value_to_check) < float(_subscriber["warninglevel"]):
-                print("Notify by mail " + _subscriber["mail"] + value_to_check)
-                emailer = EmailPlantNotifier()
-                emailer.notify(_subscriber)
-            elif sensor["type"] == "temperature" and float(value_to_check) > float(_subscriber["warninglevel"]):
-                print("Notify by mail " + _subscriber["mail"])
-                emailer = EmailTemperatureNotifier()
-                emailer.notify(_subscriber)
 
-    def _is_level_higher_than(self, max_value, actual_value):
-        return float(actual_value) > float(max_value)
+    def _is_sensor_a_plant(self, sensor):
+        return sensor["type"] == "plant"
