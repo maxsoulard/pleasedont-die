@@ -36,7 +36,7 @@ class SensorTask():
             for _subscriber in _subscribers:
                 if self._is_sensor_a_plant(sensor):
                     value_to_check = self.data["moisture"]
-                    if float(value_to_check) < float(_subscriber["warninglevel"]):
+                    if float(value_to_check) < float(sensor["warninglevel"]):
                         print("Notify by mail " + _subscriber["mail"] + value_to_check)
                         emailer = EmailPlantNotifier()
                         emailer.notify(_subscriber)
