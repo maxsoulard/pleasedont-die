@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/server.js --mongodb:host 172.17.0.1 --mongodb:db pleasedont-die",
+    "start": "node index.js --mongodb:host 172.17.0.1 --mongodb:db pleasedont-die",
     "mongo": "docker run -v /data/db:/data/db -p 27017:27017 --name pdd-mongo-container jixer/rpi-mongo &",
     "docker:build": "docker build --no-cache -t pleasedont-die .",
     "mongo:repair": "docker run --rm -v /data/db:/data/db jixer/rpi-mongo unlink \"/data/db/mongod.lock\" && docker run --rm -v /data/db:/data/db jixer/rpi-mongo --repair",
@@ -16,13 +16,6 @@
   "author": "maxsoulard",
   "license": "ISC",
   "dependencies": {
-    "@types/bluebird": "^3.5.7",
-    "@types/body-parser": "^1.16.4",
-    "@types/cors": "^2.8.1",
-    "@types/express": "^4.0.36",
-    "@types/mongodb": "^2.2.6",
-    "@types/nconf": "0.0.34",
-    "@types/node": "^7.0.29",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
     "bson": "^1.0.4",
@@ -34,7 +27,6 @@
     "mongodb-core": "^2.1.13",
     "mongojs": "^2.4.0",
     "nconf": "^0.8.4",
-    "node-gyp": "^3.6.2",
-    "typings": "^2.1.1"
+    "node-gyp": "^3.6.2"
   }
 }
